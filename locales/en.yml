@@ -7,7 +7,7 @@ en:
         help:
           who_duty:
             syntax: who duty
-            desc: Tel you who's on duty (Primary, Backup)
+            desc: Tell you currently who's on duty (primary, backup)
           ack:
             syntax: pager ack 1234
             desc: Acknowledge a specific incident

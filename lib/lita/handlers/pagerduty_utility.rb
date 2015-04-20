@@ -17,7 +17,7 @@ module Lita
       include ::PagerdutyHelper::Utility
 
       route(
-        /^who('s on)? duty(\?)?$/,
+        /^who('s)?( on)? duty(\?)?$/,
         :who_duty,
         command: true,
         help: {
@@ -62,10 +62,22 @@ module Lita
       )
 
       def who_duty(response)
-        [
-          on_call_lookup(OpenStruct.new(match_data: /(Primary)/.match("Primary"))),
-          on_call_lookup(OpenStruct.new(match_data:/(Backup)/.match("Backup")))
-        ].join("\n")
+        messages = %w(Primary Backup).map do |schedule_name|
+          schedule = pd_client.get_schedules.schedules.find { |s| s.name == schedule_name }
+
+          unless schedule
+            t('on_call_lookup.no_matching_schedule', schedule_name: schedule_name)
+            next
+          end
+
+          if (user = lookup_on_call_user(schedule.id))
+            t('on_call_lookup.response', name: user.name, email: user.email, schedule_name: schedule_name)
+          else
+            t('on_call_lookup.no_one_on_call', schedule_name: schedule_name)
+          end
+        end
+
+        response.reply(messages.join("\n"))
       end
 
       def on_call_list(response)
