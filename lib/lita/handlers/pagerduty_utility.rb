@@ -1,4 +1,5 @@
 require 'time'
+require 'ostruct'
 
 # Lita-related code
 module Lita
@@ -62,8 +63,8 @@ module Lita
 
       def who_duty(response)
         [
-          on_call_lookup(/(Primary)/.match("Primary")),
-          on_call_lookup(/(Backup)/.match("Backup"))
+          on_call_lookup(OpenStruct.new(match_data: /(Primary)/.match("Primary"))),
+          on_call_lookup(OpenStruct.new(match_data:/(Backup)/.match("Backup")))
         ].join("\n")
       end
 
