@@ -16,6 +16,15 @@ module Lita
       include ::PagerdutyHelper::Utility
 
       route(
+        /^who('s on)? duty(\?)?$/,
+        :who_duty,
+        command: true,
+        help: {
+          t('help.who_duty.syntax') => t('help.who_duty.desc')
+        }
+      )
+
+      route(
         /^pager\soncall$/,
         :on_call_list,
         command: true,
@@ -50,6 +59,13 @@ module Lita
           t('help.forget.syntax') => t('help.forget.desc')
         }
       )
+
+      def who_duty(response)
+        [
+          on_call_lookup(/(Primary)/.match("Primary")),
+          on_call_lookup(/(Backup)/.match("Backup"))
+        ].join("\n")
+      end
 
       def on_call_list(response)
         schedules = pd_client.get_schedules.schedules

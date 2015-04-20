@@ -5,6 +5,9 @@ en:
         error:
           not_implemented: Not implemented yet.
         help:
+          who_duty:
+            syntax: who duty
+            desc: Tel you who's on duty (Primary, Backup)
           ack:
             syntax: pager ack 1234
             desc: Acknowledge a specific incident
